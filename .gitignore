@@ -1,0 +1,13 @@
+# ignore all bin directories
+# matches "bin" in any subfolder
+bin/
+
+.metadata
+
+# ignore all files ending with ~
+*.class
+
+#Eclipse metadata files
+.classpath
+.project
+.settings

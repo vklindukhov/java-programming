@@ -1,0 +1,53 @@
+1. Get board, colour, declare and initialize decision variables
+2. If the board is empty, make some move in the middle four squares.
+3. Otherwise scan every valid coordinate and record statuses in status array
+4. Go through the status for every position
+
+	a) If playing in this position results in a win, assign a rank of 1
+	b) If this position is the last free spot in a row occupied entirely by 
+	opponent tokens, and this is a playable position, assign rank 2. 
+	Otherwise if the above position is not playable, record the position 
+	below it as a badMove.		
+	c) If the position would make two or more rows of three that are both 
+	winnable or blockable on the next turn, assign rank 3.
+	d) If the position blocks two or more otherwise unblocked rows of two 
+	opponent tokens, assign rank 4.
+	e) If the position makes a row of three counters not blockable on the 
+	next turn, assign rank 5.
+	f) If the position makes two or more unblocked rows of two player tokens, 
+	assign rank 6.
+	g) If the position satisfies none of the above conditions, assign rank 7.
+	
+5. Rank the moves from lowest to highest rank. Order of moves of same rank does not matter.
+6. Take the first move. If it is not a badMove or it is rank 1, play it. 
+	Otherwise remove that move from the list and take the next one.
+7. If no move satisfies the above conditions, then do nothing.
+
+Note: Probably too hard to know whether a row is blockable or not
+
+Simpler version
+
+1. Get board, colour, declare and initialize decision variables
+2. If the board is empty, make some move in the middle four squares.
+3. Otherwise scan every valid coordinate and record statuses in status array
+4. Go through the status for every position
+
+	a) If playing in this position results in a win, assign a rank of 1
+	b) If this position is the last free spot in a row occupied entirely by 
+	opponent tokens, and this is a playable position, assign rank 2. 
+	Otherwise if the above position is not playable, record the position 
+	below it as a badMove.
+	c) If the position blocks two or more otherwise unblocked rows of two 
+	opponent tokens, assign rank 3.
+	d) If the position would make two or more rows of three, assign rank 4.
+	e) If the position makes two or more unblocked rows of two player tokens, 
+	assign rank 5.
+	f) If the position satisfies none of the above conditions, assign rank 6
+	g) If the position makes one row of three counters, assign rank 7.
+	
+5. Rank the moves from lowest to highest rank. Order of moves of same rank does not matter.
+6. Take the first move. If it is not a badMove or it is rank 1, play it. 
+	Otherwise remove that move from the list and take the next one.
+7. If no move satisfies the above conditions, then do nothing.
+
+Note: Probably too hard to know whether a row is blockable or not

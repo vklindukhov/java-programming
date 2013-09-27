@@ -1,0 +1,4 @@
+more than one operand per bracket
+clean up mathToken - make a subclass per token type
+how to implement implicit multiplication?
+how to round sin(pi) to 0

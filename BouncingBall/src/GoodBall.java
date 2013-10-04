@@ -1,5 +1,3 @@
-package part4;
-
 import java.awt.*;
 import javax.swing.*;
 

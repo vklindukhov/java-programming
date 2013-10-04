@@ -1,0 +1,131 @@
+\documentclass[12pt, twoside, a4paper]{article}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage[margin=2cm]{geometry}
+
+\usepackage{graphicx}
+
+\let\oldhat\hat
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\hat}[1]{\oldhat{\mathbf{#1}}}
+\DeclareMathOperator{\sech}{sech}
+ 
+ 
+\begin{document}
+\pagestyle{plain}
+\title{Computer simulation of a bouncing ball}
+\author{Max Fisher}
+\maketitle
+\section{Introduction}
+
+We will use differential equations from physics in order to solve the problem of calculating the trajectory of the ball given factors such as air resistance, gravity, and being able to give the ball an arbitrary external force using the keyboard. Later we will consider the situation where we have wind blowing, and also cases where the density of the ball is comparable to the density of the air, so that buoyancy effects occur. 
+
+\section{Constants and symbols}
+We define the following constants and symbols:
+\begin{align*}
+r &:= \text{ball radius (m) } \\
+m &:= \text{ball mass (kg) } \\
+g &:= \text{acceleration due to gravity (9.80 m/s$^2$)} \\
+\rho_a &:= \text{density of air (1.225 kg/m$^3$)} \\
+C_D &:= \text{coefficient of drag of ball in air (0.1 if smooth; 0.47 if rough)} \\
+A &:= \text{cross sectional area of ball } (=\pi r^2 \text{ m}^2) \\
+F_D &:= \text{the resistive force of a fluid on the ball's motion, given by the drag equation:} \\
+F_D &= \frac{1}{2} \rho  C_D A v^2 \text{ (N)} \\
+b &:= \text{the coefficient of $v^2$ in the drag equation, } \tfrac{1}{2} \rho  C_D A \text{ (kg/m)} \\
+\vec{F_k} &:=\text{the external force from the keyboard, defined as follows:} \\
+\vec{F_k} &=
+    \begin{cases}
+        a \vec{j} & \text{if the up arrow is pressed,} \\
+       -a \vec{j} & \text{if the down arrow is pressed,} \\
+        a \vec{i} & \text{if the right arrow is pressed,} \\
+        -a \vec{i} & \text{if the left arrow is pressed,} \\
+        \vec{0} & \text{otherwise.}
+    \end{cases}
+\end{align*}
+where $a$ is an arbitrary positive constant, to which we initially assign the value of $1.1mg$.
+\pagebreak
+
+\section{Equations}
+\subsection{Horizontal motion}
+We commence with a treatment of the ball's acceleration in the $x$ direction. The sum of the forces in the $x$ direction is:
+\begin{align*}
+\sum F_x &= F_{k_x} - F_{D_x} \\
+&= ma_x && \text{(by Newton's second law)} \\
+\shortintertext{so}
+m \frac{dv_x}{dt} &=   F_{k_x} - bv_x^2 \\
+\int \frac{1}{F_{k_x} - bv_x^2} \, dv_x &=  \frac{1}{m} \int dt && \text{(solving by separation of variables)} \\
+\end{align*}
+\\
+The general solution of this equation is
+\begin{equation*}
+v_x = \sqrt{\frac{F_{k_x}}{b}} \tanh \left( \sqrt{F_{k_x} b } \left(\frac{t}{m} + C \right) \right) \\
+\end{equation*}
+If we let $v_x = v_0$ when $t = 0$, we get $$C = \frac{1}{\sqrt{F_{k_x} b}}\tan ^{-1} \left ( v_0 \sqrt{ \frac{b}{F_{k_x}}}\right)$$
+so
+\begin{equation} \label{generalx}
+%&= \frac{v_0 \left( e^{2 \sqrt{F_{k_x}} \frac{t}{m} } +1 \right) +  \sqrt{\frac{F_{k_x}}{b}} \left( e^{2 \sqrt{F_{k_x}} \frac{t}{m} } - 1 \right)}
+%{v_0 \sqrt{\frac{b}{F_{k_x}}} \left( e^{2 \sqrt{F_{k_x}} \frac{t}{m} } - 1 \right) + \left( e^{2 \sqrt{F_{k_x}} \frac{t}{m} } +1 \right)} \\
+v_x = \frac{e^{2 \sqrt{F_{k_x}} \frac{t}{m} } - \left( 1 - \displaystyle \frac{2\sqrt{b}v_0}{\sqrt{F_{k_x}} + \sqrt{b}v_0} \right) }
+{e^{2 \sqrt{F_{k_x}} \frac{t}{m} } + \left ( 1 - \displaystyle \frac{2\sqrt{b}v_0}{\sqrt{F_{k_x}} + \sqrt{b}v_0}\right) }
+\end{equation}
+But when $F_{k_x} = 0$, the solution reduces to:
+\begin{align}\label{noforcex}
+\begin{aligned}  
+v_x &= \frac{m}{C + bt} \\
+\\
+&= \frac{m v_0}{m + btv_0} && \text{letting $v_x = v_0$ when $t = 0$.} 
+\end{aligned}
+\end{align}
+
+From \eqref{generalx} and \eqref{noforcex} we can derive explicit formulae for the rate of change of velocity in the $x$ direction. In general: 
+\begin{equation} \label{explicitx}
+a_x = \frac{d}{dt} v_x = \frac{F_{k_x}}{m} \sech ^{-2} \left( \sqrt{F_{k_x} b} \left( \frac{t}{m} + C \right) \right)
+\end{equation}
+Or, when $F_{k_x} = 0$, we have:
+\begin{equation} \label{explicitxnoforce}
+a_x = \frac{-mb}{\left( C + bt \right) ^2}
+\end{equation}
+
+However, in order to perform a numerical simulation of the ball, we need only know the time derivative of velocity, and we can use Euler's method or some other higher order Runge-Kutta method in order to solve this equation. Thus, the crucial equation for motion in the $x$ direction is:
+\begin{equation} \label{dex}
+\frac{d}{dt} v_x =  \frac{F_{k_x} - bv_x^2}{m} \\
+\end{equation}
+
+\subsection{Vertical motion}
+When dealing with the forces in the $y$-direction, we note that the only difference that we must also consider the weight of the ball. Thus:
+\begin{align*}
+\sum F_y &= F_{k_y} - mg - F_{D_y} \\
+&= (F_{k_y} - mg) - bv_y^2 \\
+&= ma_y
+\end{align*}
+This is of exactly the same form as the differential equation for motion in the $x$ direction, except that the constant force $F_{k_x}$ has now become $(F_{k_y} - mg)$. Hence in our solutions we can just substitute in these variables:
+\begin{equation} \label{generaly}
+v_y = \sqrt{\frac{F_{k_y} - mg}{b}} \tanh \left( \sqrt{(F_{k_y} - mg) b } \left(\frac{t}{m} + C \right) \right)
+\end{equation}
+Our degenerate condition is now when $F_{k_y} = mg$. In this case, the solution again reduces to:
+\begin{equation}  \label{noforcey}
+v_y = \frac{m v_0}{btv_0 + m}
+\end{equation}
+
+We include the explicit equations for the acceleration in the $y$-direction for the sake of completeness. In general:
+\begin{equation}  \label{explicity}
+a_y = \frac{F_{k_y} - mg}{m} \sech ^{-2} \left( \sqrt{(F_{k_y} - mg) b} \left( \frac{t}{m} + C \right) \right)
+\end{equation}
+And in the degenerate case:
+\begin{equation} \label{explicitynoforce}
+a_y = \frac{-bm}{\left( bt + C \right) ^2}
+\end{equation}
+
+We conclude the section by restating the main equation that we need in order to model motion in the y-direction:
+\begin{equation} \label{dex}
+\frac{d}{dt} v_y =  \frac{F_{k_y} - mg - bv_y^2}{m} \\
+\end{equation}
+
+\section{Calculating the trajectory}
+We will use the \emph{midpoint method}, as an improvement of the basic Euler method, as the primary way of solving the differential equations we need for this simualation. The midpoint method can be used to numerically solve a differential equation for a function $y$ such that $y' = f(t, y)$ for some function $f$. It gives the approximate value of $y$ at a time step $n+1$, given a fixed time step amount $h$, the function value $y_n$ at time step $n$, and the derivative at time step $n$, $y'_n = f(t_n, y_n)$:
+\begin{equation}
+y_{n+1} = y_n + hf\left(t_n+\frac{h}{2},y_n+\frac{h}{2}f(t_n, y_n)\right)
+\end{equation}
+
+However, we would like to know how accurate the midpoint method is in approximating solutions to the differential equations. To do this, we can use the explicit equations for velocity \eqref{explicitx}, \eqref{explicitxnoforce}, \eqref{explicity}, and \eqref{explicitynoforce}, and integrate them to get explicit equations for $x$ and $y$ respectively, in terms of time $t$.
+\end{document}

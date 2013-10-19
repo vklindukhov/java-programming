@@ -6,8 +6,3 @@ bin/
 
 # ignore all files ending with ~
 *.class
-
-#Eclipse metadata files
-.classpath
-.project
-.settings

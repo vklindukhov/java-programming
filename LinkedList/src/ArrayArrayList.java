@@ -102,9 +102,27 @@ public class ArrayArrayList<E> implements ArrayList<E> {
 		// overflow-conscious code
 		if (size - newCapacity > 0)
 			return;
+		ensureCapacity(newCapacity, 0, size);
+	}
+	/**
+	 * Ensures that this ArrayArrayList can fit the specified
+	 * number of items without having to be resized again.
+	 * This method only copies the specified range of elements 
+	 * over to the new array, making it unsuitable for external use.
+	 * If the current number of elements is greater than newCapacity, 
+	 * then the capacity is unchanged.
+	 * @param newCapacity the maximum number of total elements this 
+	 * list will be able to hold without resizing
+	 * @param copyStart the start index of the range of elements to copy to the new array
+	 * @param numElements the number of elements to copy to the new array
+	 */
+	private void ensureCapacity(int newCapacity, int copyStart, int numElements) {
+		// overflow-conscious code
+		if (size - newCapacity > 0)
+			return;
 		E[] old = elements;
 		elements = (E[]) new Object[newCapacity];
-		System.arraycopy(old, 0, elements, 0, size);
+		System.arraycopy(old, copyStart, elements, copyStart, numElements);
 		capacity = newCapacity;
 	}
 	
@@ -154,13 +172,14 @@ public class ArrayArrayList<E> implements ArrayList<E> {
 		else {
 			checkBounds(i);
 			if (size == capacity)
-				ensureCapacity(RESIZE_FACTOR*capacity);
+				// don't need to copy all elements, as they will be recopied later
+				ensureCapacity(RESIZE_FACTOR*capacity, 0, i);
+			
 			// shift elements right by one
 			System.arraycopy(elements, i, elements, i+1, size - i);
 			elements[i] = element;
 			size++;
 		}
-		
 	}
 
 	@Override

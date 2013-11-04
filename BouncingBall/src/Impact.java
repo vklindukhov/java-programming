@@ -41,7 +41,9 @@ import java.awt.*;
 //-------------------------------------------------------------------
 //This is the main applet class
 
+@SuppressWarnings("deprecation")
 public class Impact extends java.applet.Applet {
+	private static final long serialVersionUID = -7249193018220898138L;
 	MainWindow b;
 
 	public void init() {
@@ -80,7 +82,9 @@ public class Impact extends java.applet.Applet {
 // -------------------------------------------------------------------
 // This class controls the main window
 
+@SuppressWarnings("deprecation")
 class MainWindow extends Frame {
+	private static final long serialVersionUID = -5938331160250205967L;
 	Animator anim;
 	Ticker tick;
 	Thread anim_thread;
@@ -244,7 +248,9 @@ class MainWindow extends Frame {
 // -------------------------------------------------------------------
 // This class performs the animation in the main canvas.
 
+@SuppressWarnings("deprecation")
 class Animator extends Canvas implements Runnable {
+	private static final long serialVersionUID = -7650468743616950373L;
 	final int max = 100;
 	int num; // number of balls
 	int cur, mx, my; // current ball and mouse x y

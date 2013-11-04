@@ -120,7 +120,7 @@ public class BouncingBallStable extends JFrame {
 	 *
 	 * @param debug if true, the program outputs time interval data to a text file.
 	 */
-	public void updatePosition(boolean debug) {
+	public synchronized void updatePosition(boolean debug) {
 		long timeInterval = System.nanoTime() - currentTime;
 		currentTime += timeInterval; // update time quickly
 		int windowWidth = getWidth(); // get current window width

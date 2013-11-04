@@ -15,8 +15,8 @@ public class GoodBall extends JFrame {
 	private int x = 100; // top-left (x, y)
 	private int y = 100;
 	private int size = 90; // width and height
-	private int xSpeed = 1; // moving speed in x and y directions
-	private int ySpeed = 2; // displacement per step in x and y
+	private int xSpeed = 5; // moving speed in x and y directions
+	private int ySpeed = 4; // displacement per step in x and y
 
 	/** Constructor to setup the GUI components */
 	public GoodBall() {

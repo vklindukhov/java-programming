@@ -61,6 +61,7 @@ public class SinglyLinkedListTest {
 		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName()
 				+ ": " + sll.toString());
 	}
+
 	@Test 
 	public void testGetLast() {
 		sll.addLast("First");
@@ -116,6 +117,47 @@ public class SinglyLinkedListTest {
 		assertTrue(sll.remove("Zero"));
 		assertEquals("One", sll.removeFirst());
 		assertEquals(1, sll.size());
+		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName()
+				+ ": " + sll.toString());
+	}
+	
+	@Test 
+	public void testRemoveObjectNotPresent() {
+		sll.addFirst("One");
+		sll.addFirst("Zero");
+		sll.addLast("Two");
+		assertFalse(sll.remove("Three"));
+		assertEquals("Zero", sll.removeFirst());
+		assertEquals(2, sll.size());
+		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName()
+				+ ": " + sll.toString());
+	}
+	@Test
+	public void testIndexOf() {
+		sll.addFirst("One");
+		sll.addFirst("Zero");
+		sll.addLast("Two");
+		assertEquals(0, sll.indexOf("Zero"));
+		assertEquals(2, sll.indexOf("Two"));
+		assertEquals(-1, sll.indexOf("Three"));
+		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName()
+				+ ": " + sll.toString());
+	}
+
+	@Test 
+	public void testGetIndex() {
+		sll.addFirst("One");
+		sll.addLast("Two");
+		assertEquals("One", sll.get(0));
+		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName()
+				+ ": " + sll.toString());
+	}
+	@Test 
+	public void testGetIndexOOB() {
+		sll.addFirst("One");
+		sll.addLast("Two");
+		exception.expect(IndexOutOfBoundsException.class);
+		assertEquals("One", sll.get(3));
 		System.out.println(Thread.currentThread().getStackTrace()[1].getMethodName()
 				+ ": " + sll.toString());
 	}

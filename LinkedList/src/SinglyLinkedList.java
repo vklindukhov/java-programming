@@ -177,16 +177,14 @@ public class SinglyLinkedList<E> implements LinkedList<E> {
 	
 	@Override
 	public E get(int i) {
+		if (i < 0 || i >= size)
+			throw new IndexOutOfBoundsException();
 		int index = 0;
 		Node current = head;
-		while (current != null && index != i) {
-			index += 1;
+		for (; index < i; index++) {
 			current = current.next;
 		}
-		if (current == null)
-			return null;
-		else
-			return current.element;
+		return current.element;
 	}
 
 	@Override
@@ -240,17 +238,58 @@ public class SinglyLinkedList<E> implements LinkedList<E> {
 	}
 	
 	@Override
-	public boolean remove(E e) {
+	public int indexOf(Object o) {
+		if (head == null) // do nothing, return false
+			return -1;
+		if (o == null) {// special case for null objects
+			Node current = head;
+			for (int index = 0; current != null; index++, current = current.next) {
+				if (current.element == null)
+					return index;
+			}
+			// not found
+			return -1;
+		}
+		
+		Node current = head;
+		for (int index = 0; current != null; index++, current = current.next) {
+			if (o.equals(current.element))
+				return index;
+		}
+		// not found
+		return -1;
+	}
+	
+	@Override
+	public boolean remove(Object o) {
 		if (head == null) // do nothing, return false
 			return false;
-		else if (head.element.equals(e)) {
+		if (o == null) {// special case for null objects
+			if (head.element == null) {
+				head = head.next;
+				size--;
+				return true;
+			} else {
+				for (Node current = head; current.next != null; current = current.next) {
+					if (current.next.element == null) {
+						// unlink current.next
+						current.next = current.next.next;
+						size--;
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+		
+		if (o.equals(head.element)) {
 			head = head.next;
 			size--;
 			return true;
 		} else {
-			Node current = head;
-			while (current.next != null) {
-				if (current.next.element.equals(e)) {
+			for (Node current = head; current.next != null; current = current.next) {
+				if (o.equals(current.next.element)) {
+					// unlink current.next
 					current.next = current.next.next;
 					size--;
 					return true;
@@ -268,6 +307,7 @@ public class SinglyLinkedList<E> implements LinkedList<E> {
 		size--;
 		return oldHead.element;
 	}
+	
 	@Override
 	public int size() {
 	    return size;
@@ -291,5 +331,14 @@ public class SinglyLinkedList<E> implements LinkedList<E> {
 		}
 		sb.append("]");
 		return sb.toString();
+	}
+
+	@Override
+	public E[] toArray() {
+		E[] elements = (E[]) new Object[size];
+		Node current = head;
+		for (int index = 0; current.next != null; index++, current = current.next)
+			elements[index] = current.element;
+		return elements;
 	}
 }

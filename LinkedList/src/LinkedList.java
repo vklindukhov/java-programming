@@ -1,29 +1,7 @@
-import java.util.Iterator;
-
 /**
  * Defines the Linked List ADT, with a generic data type.
  */
-public interface LinkedList<E> extends Iterable<E> {
-
-	/**
-	 * Gets the size of the list
-	 * @return the number of nodes contained in this list
-	 */
-	public int size();
-	
-	/**
-	 * Checks whether the list is empty. 
-	 * The list is empty if and only if its size is 0.
-	 * @return true if size() returns 0, false otherwise.
-	 */
-	public boolean isEmpty();
-
-	/**
-	 * Gets the element at a specific index in the list
-	 * @param i the list index
-	 * @return the ith element of the list
-	 */
-	public E get(int i);
+public interface LinkedList<E> extends List<E> {
 	
 	/** 
 	 * Returns, but does not remove, the first element in this list. 
@@ -61,17 +39,4 @@ public interface LinkedList<E> extends Iterable<E> {
 	 */
 	public E removeFirst();
 	
-	/**
-	 * Removes an element of this list. The object is compared 
-	 * to each element of this list using {@code equals}.
-	 * @param e the object to remove
-	 * @return True if the object was found, otherwise false.
-	 */
-	public boolean remove(E e);
-	
-	/** 
-	 * Returns an Iterator over the objects in this list.
-	 * @return an Iterator over the objects in this list.
-	 */
-	public Iterator<E> iterator();
 }

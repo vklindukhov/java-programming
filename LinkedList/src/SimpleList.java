@@ -1,7 +1,7 @@
 import java.util.Iterator;
 
 
-public interface List<E> extends Iterable<E> {
+public interface SimpleList<E> extends Iterable<E> {
 
 	/**
 	 * Gets the size of the list

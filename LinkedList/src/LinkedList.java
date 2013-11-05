@@ -1,7 +1,7 @@
 /**
  * Defines the Linked List ADT, with a generic data type.
  */
-public interface LinkedList<E> extends List<E> {
+public interface LinkedList<E> extends SimpleList<E> {
 	
 	/** 
 	 * Returns, but does not remove, the first element in this list. 

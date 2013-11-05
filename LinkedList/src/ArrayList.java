@@ -1,7 +1,7 @@
 import java.util.RandomAccess;
 
 
-public interface ArrayList<E> extends List<E>, RandomAccess {
+public interface ArrayList<E> extends SimpleList<E>, RandomAccess {
 	
 	/**
 	 * Sets the element at index i in this list to {@code element}, and returns old element

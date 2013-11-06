@@ -9,7 +9,7 @@ public abstract class AbstractNode<E> implements Node<E> {
 	//private Tree<E> containingTree;
 	
 	/**
-	 * Constructor that initializes element, but with no containing tree
+	 * Constructor that initializes element
 	 * @param element the Object to store in this Node
 	 */
 	public AbstractNode(E element) {
@@ -18,7 +18,7 @@ public abstract class AbstractNode<E> implements Node<E> {
 	}
 
 	/**
-	 * Default contstructor that does not set either element or containing tree
+	 * Default contstructor that does not set element.
 	 */
 	public AbstractNode() {
 		this(null);
@@ -85,6 +85,6 @@ public abstract class AbstractNode<E> implements Node<E> {
 	
 	@Override
 	public String toString() {
-		return "{" + element.toString() + "}";
+		return element.toString();
 	}
 }

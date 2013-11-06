@@ -1,47 +1,28 @@
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+/**
+ * Tree implementation allowing an arbitrary number of children for each Node.
+ * Duplicate and null nodes are not allowed and added Nodes must be a subtype
+ * of TreeNode. This implementation throws exceptions when conditions such as 
+ * those above are not met, instead of 'swallowing' the inconsistency.
+ * @author Max Fisher
+ * @param <E> The Type to store in this Tree.
+ */
 public class GeneralTree<E> extends AbstractTree<E> {
-	public static class GeneralTreeNode<E> extends AbstractNode<E> {
-		private Node<E> parent;
-		private Set<Node<E>> children;
-
-		public GeneralTreeNode(E element) {
-			super(element);
-			this.parent = null;
-			this.children = new HashSet<Node<E>>();
-		}
-		
-		private Node<E> getParent() {
-			return parent;
-		}
-
-		private void setParent(Node<E> parent) {
-			this.parent = parent;
-
-		}
-
-		private Collection<Node<E>> getChildren() {
-			return children;
-		}
-
-		private void addChild(Node<E> child) {
-			children.add(child);
-		}
-
-		private void removeChild(Node<E> child) {
-			children.remove(child);
-		}
-		
-	}
+	private final Set<Node<E>> nodes;
+	
 	/**
 	 * Constructor setting root to the specified node
 	 * @param root the root Note of this Tree
 	 */
 	public GeneralTree(Node<E> root) {
-		super(root);
+		nodes = new HashSet<>();
+		setRoot(root);
 	}
 	/**
 	 * Default constructor which does not set root Node.
@@ -60,20 +41,20 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 * @throws NoSuchNodeException if the given parent Node 
 	 * is not contained within this Tree
 	 */
-	public void add(Tree<E> subTree, Node<E> parent) throws DuplicateNodeException, NoSuchNodeException {
+	public void add(GeneralTree<E> subTree, Node<E> parent) throws DuplicateNodeException, NoSuchNodeException {
 		if (subTree == null) 
 			return;
 		checkNode(parent);
 		// compute intersection of sets
 		Collection <Node<E>> commonNodes = this.nodes();
 		commonNodes.retainAll(subTree.nodes());
-		if (!commonNodes.isEmpty())
+		if (!Collections.disjoint(nodes(), subTree.nodes()))
 			throw new DuplicateNodeException("Cannot add the following duplicate nodes to Tree " + this + ": " + commonNodes);
 		// link in 
-		((GeneralTreeNode<E>) parent).addChild(subTree.getRoot());
-		((GeneralTreeNode<E>) subTree.getRoot()).setParent(parent);
+		((TreeNode<E>) parent).addChild(subTree.getRoot());
+		((TreeNode<E>) subTree.getRoot()).setParent(parent);
 		
-		nodes.addAll(subTree.nodes());
+		nodes().addAll(subTree.nodes());
 	}
 	
 	/**
@@ -89,11 +70,11 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 */
 	public Node<E> add(E element, Node<E> parent) throws NoSuchNodeException {
 		checkNode(parent);
-		GeneralTreeNode<E> child = new GeneralTreeNode<>(element);
+		TreeNode<E> child = new TreeNode<>(element);
 		//child.setContainingTree(this);
-		((GeneralTreeNode<E>) parent).addChild(child);
+		((TreeNode<E>) parent).addChild(child);
 		child.setParent(parent);
-		nodes.add(child);
+		nodes().add(child);
 		return child;	
 	}
 	
@@ -117,9 +98,9 @@ public class GeneralTree<E> extends AbstractTree<E> {
 			throw new DuplicateNodeException("Node " + v + " is already contained in " + this);
 		
 		// link in new node
-		((GeneralTreeNode<E>) parent).addChild(v);
-		((GeneralTreeNode<E>) v).setParent(parent);
-		nodes.add(v);
+		((TreeNode<E>) parent).addChild(v);
+		((TreeNode<E>) v).setParent(parent);
+		nodes().add(v);
 	}
 	
 	/** 
@@ -129,9 +110,9 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 * if that node is contained within this tree
 	 * @throws NoSuchNodeException if the given node is not contained in this tree
 	 */
-	public Collection<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException {
+	public List<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException {
 		checkNode(v); // also handles null argument
-		return ((GeneralTreeNode<E>) v).getChildren();
+		return ((TreeNode<E>) v).getChildren();
 	}
 	
 	/**
@@ -144,7 +125,7 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 */
 	public Node<E> getParent(Node<E> v) throws NoSuchNodeException {
 		checkNode(v); // also handles null argument
-		return isRoot(v) ? null : ((GeneralTreeNode<E>) v).getParent();
+		return isRoot(v) ? null : ((TreeNode<E>) v).getParent();
 	}
 
 	/**
@@ -169,7 +150,7 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 * @throws IllegalNodeException if the type of the given node is inappropriate for this Tree.
 	 */
 	protected void checkNodeType(Node<E> v) throws IllegalNodeException {
-		if (!(v instanceof GeneralTreeNode))
+		if (!(v instanceof TreeNode))
 			throw new IllegalNodeException("Node " + v + " not allowed in tree " + this + 
 					" (must be subtype of GeneralTreeNode");
 	}
@@ -192,28 +173,25 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	
 	/**
 	 * Removes the given Node and all its descendents from this tree, 
-	 * and returns them as a new Tree object, if that Node is contained by this tree.
+	 * and returns them as a new GeneralTree object, if that Node is contained by this tree.
 	 * @param v the node at the root of the subtree to remove from this tree.
 	 * @return The subtree of this Tree with the given node as root
 	 * @throws NoSuchNodeException if the given Node is not present in this Tree
 	 */
-	public Tree<E> removeSubtree(Node<E> v) throws NoSuchNodeException {
+	public GeneralTree<E> removeSubtree(Node<E> v) throws NoSuchNodeException {
 		checkNode(v);
 		//make new tree with root
 		GeneralTree<E> subtree = new GeneralTree<>(v);
 		
 		// unlink from current tree
-		((GeneralTreeNode<E>) getParent(v)).removeChild(v);
-		((GeneralTreeNode<E>) v).setParent(null);
-		if (!nodes.remove(v)) //should be true always
-			throw new NoSuchNodeException("Node " + v + "expected to be found in stored nodes of " + this 
-					+ ", but was not found.");
+		((TreeNode<E>) getParent(v)).removeChild(v);
+		((TreeNode<E>) v).setParent(null);
 		
 		// remove all children of v from this Tree and add to other tree; 
 		// don't need to change structure
 		Collection<Node<E>> descendants = (getDescendants(v));
-		nodes.removeAll(descendants);
-		subtree.nodes.addAll(descendants);
+		nodes().removeAll(descendants);
+		subtree.nodes().addAll(descendants);
 		return subtree;
 
 	}
@@ -230,9 +208,9 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	public E removeNode(Node<E> v) throws UnsupportedOperationException, NoSuchNodeException {
 		if (!isExternal(v)) // also handles NoSuchNodeException
 			throw new UnsupportedOperationException("Node " + v + "is not external in Tree " + this);
-		((GeneralTreeNode<E>) getParent(v)).removeChild(v);
-		((GeneralTreeNode<E>) v).setParent(null);
-		if (!nodes.remove(v)) //should be true always
+		((TreeNode<E>) getParent(v)).removeChild(v);
+		((TreeNode<E>) v).setParent(null);
+		if (!nodes().remove(v)) //should be true always
 			throw new NoSuchNodeException("Node " + v + "expected to be found in stored nodes of " + this 
 					+ ", but was not found.");
 		return v.getElement();
@@ -250,12 +228,65 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	@Override
 	public Collection<Node<E>> getDescendants(Node<E> v) throws NoSuchNodeException {
 		checkNode(v);
-		Collection<Node<E>> descendants = new ArrayList<>(size()/4); // max of two resizes necessary
+		Collection<Node<E>> descendants = new ArrayList<Node<E>>();
 		descendants.add(v);
 		for (Node<E> child : getChildren(v)) {
 			descendants.addAll(getDescendants(child));
 		}
-		return null;
+		return descendants;
+	}
+	
+	/**
+	 * Returns a collection of all nodes in this Tree.
+	 * The collection need not be in any particular order
+	 * @return an iterable collection over the nodes of this Tree.
+	 */
+	@Override
+	public Set<Node<E>> getNodes() {
+		// prevent changes to set
+		return Collections.unmodifiableSet(nodes());
+	}
+	
+	@Override
+	protected Set<Node<E>> nodes() {
+		return nodes;
+	}
+	@Override
+	public List<Node<E>> preOrderTraversal() {
+		return preOrderTraversal(getRoot());
+	}
+	/**
+	 * Performs a pre-order traversal of a subtree of this Tree, 
+	 * starting at the given Node
+	 * @param v the Node to start the pre-order traversal at
+	 * @return a List containing the nodes of the given subtree of this Tree
+	 * in pre-order traversal order.
+	 */
+	private List<Node<E>> preOrderTraversal(Node<E> v) {
+		List<Node<E>> preNodes = new ArrayList<>();
+		preNodes.add(v);
+		for (Node<E> child : getChildren(v))
+			preNodes.addAll(preOrderTraversal(child));
+		return preNodes;
+	}
+	
+	@Override
+	public List<Node<E>> postOrderTraversal() {
+		return postOrderTraversal(getRoot());
+	}
+	/**
+	 * Performs a post-order traversal of a subtree of this Tree, 
+	 * starting at the given Node
+	 * @param v the Node to start the post-order traversal at
+	 * @return a List containing the nodes of the given subtree of this Tree
+	 * in post-order traversal order.
+	 */
+	private List<Node<E>> postOrderTraversal(Node<E> v) {
+		List<Node<E>> postNodes = new ArrayList<>();
+		for (Node<E> child : getChildren(v))
+			postNodes.addAll(postOrderTraversal(child));
+		postNodes.add(v);
+		return postNodes;
 	}
 
 }

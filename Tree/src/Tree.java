@@ -1,5 +1,7 @@
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * An interface for the Tree ADT, or a Directed Acyclic Graph.
@@ -45,17 +47,21 @@ public interface Tree<E> extends Iterable<E> {
 	 */
 	public int depth(Node<E> v) throws NoSuchNodeException;
 	
-	/** 
-	 * Returns an iterable collection of the children of a given node.
-	 * An exception is thrown if the node is not contained within this tree.
-	 * @return an iterable collection of the children of a given node, 
-	 * if that node is contained within this tree
+	/**
+	 * Returns a random-access List of the children of a given parent node, 
+	 * in the order that they were added to that node. If the given node is external,
+	 * an empty list is returned. An exception is thrown 
+	 * if the node is not contained within this tree.
+	 * 
+	 * @return a random-access List of the children of a given node, if that
+	 *         node is contained within this tree
 	 * @throws NoSuchNodeException if the given node is not contained in this tree
 	 */
-	public Collection<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException;
-
+	public List<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException;
+	
 	/**
-	 * Returns an iterable collection of all descendants of a given node. 
+	 * Returns an iterable collection of all descendants of a given node.
+	 * The collection need not be in any particular order.
 	 * That is, this method returns a collection of all nodes for which 
 	 * {@code ancestorOf(v, node)} is true.
 	 * An exception is thrown if the node is not contained within this tree.
@@ -64,7 +70,7 @@ public interface Tree<E> extends Iterable<E> {
 	 *         node is contained within this tree
 	 * @throws NoSuchNodeException if the given node is not contained in this tree
 	 */
-	public abstract Collection<Node<E>> getDescendants(Node<E> v) throws NoSuchNodeException;
+	public Collection<Node<E>> getDescendants(Node<E> v) throws NoSuchNodeException;
 	
 	/**
 	 * Returns the parent of a given node. 
@@ -147,21 +153,53 @@ public interface Tree<E> extends Iterable<E> {
 	
 	/** 
 	 * Returns an iterator over the elements stored in this Tree.
+	 * The elements are not in any particular order; for ordered traversals
+	 * see the pre-order and post-order methods.
 	 * @return an iterator over the elements stored in this Tree.
 	 */
 	public Iterator<E> iterator();
 	
-	/** 
+	/**
 	 * Returns an iterable collection over the nodes of this Tree.
+	 * The collection need not be in any particular order.
 	 * @return an iterable collection over the nodes of this Tree.
 	 */
-	public Collection<Node<E>> nodes();
+	public Collection<Node<E>> getNodes();
+	
+	/**
+	 * Returns a list of Nodes in this Tree in order of preorder traversal.
+	 * The order of traversal of children, unless specified in implementations, 
+	 * defaults to the order in which the children were added to the parent Node.
+	 * @return a list of Nodes in this Tree in order of preorder traversal.
+	 */
+	public List<Node<E>> preOrderTraversal();
+	
+	/**
+	 * Returns a list of Nodes in this Tree in order of post order traversal.
+	 * The order of traversal of children, unless specified in implementations, 
+	 * defaults to the order in which the children were added to the parent Node.
+	 * @return a list of Nodes in this Tree in order of post order traversal.
+	 */
+	public List<Node<E>> postOrderTraversal();
 	
 	/** 
 	 * Sets the root of this tree to the given node, and returns the previous root node
 	 * @return The previous root node of this tree
 	 */
 	public Node<E> setRoot(Node<E> root);
+	
+	/**
+	 * Prints a nicely formatted version of this Tree 
+	 * to the specified PrintWriter
+	 * @param PrintWriter the PrintWriter to print to 
+	 */
+	public void print(PrintWriter pw);
+	
+	/**
+	 * Prints a nicely formatted version of this Tree 
+	 * to the standard output
+	 */
+	public void print();
 	
 	/** 
 	 * Returns the number of nodes in this tree.

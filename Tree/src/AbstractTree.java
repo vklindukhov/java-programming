@@ -1,8 +1,9 @@
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Abstract implementation of general Tree ADT, where nodes are visible.
@@ -21,26 +22,6 @@ public abstract class AbstractTree<E> implements Tree<E> {
 	 * The root node of this Tree
 	 */
 	private Node<E> root;
-
-	/**
-	 * Set of Nodes stored in this tree (duplicates not permitted)
-	 */
-	protected Set<Node<E>> nodes;
-
-	/**
-	 * Constructor setting root to the specified node
-	 * @param root the root Note of this Tree
-	 */
-	public AbstractTree(Node<E> root) {
-		this.nodes = new HashSet<Node<E>>();
-		setRoot(root);
-	}
-	/**
-	 * Default constructor which does not set root Node.
-	 */
-	public AbstractTree() {
-		this(null);
-	}
 
 	@Override
 	public boolean ancestorOf(Node<E> u, Node<E> v) throws NoSuchNodeException {
@@ -98,10 +79,10 @@ public abstract class AbstractTree<E> implements Tree<E> {
 		}
 		return false;
 	}
-
+	
 	@Override
 	public boolean containsNode(Node<E> v) {
-		return nodes.contains(v);
+		return nodes().contains(v);
 	}
 
 	@Override
@@ -112,18 +93,21 @@ public abstract class AbstractTree<E> implements Tree<E> {
 	}
 
 	/**
-	 * Returns an iterable collection of the children of a given node. An
-	 * exception is thrown if the node is not contained within this tree.
+	 * Returns a random-access List of the children of a given parent node, 
+	 * in the order that they were added to that node. If the given node is external,
+	 * an empty list is returned. An exception is thrown 
+	 * if the node is not contained within this tree.
 	 * 
-	 * @return an iterable collection of the children of a given node, if that
+	 * @return a random-access List of the children of a given node, if that
 	 *         node is contained within this tree
 	 * @throws NoSuchNodeException if the given node is not contained in this tree
 	 */
 	@Override
-	public abstract Collection<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException;
+	public abstract List<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException;
 	
 	/**
-	 * Returns an iterable collection of all descendants of a given node. 
+	 * Returns an iterable collection of all descendants of a given node.
+	 * The collection need not be in any particular order.
 	 * That is, this method returns a collection of all nodes for which 
 	 * {@code ancestorOf(v, node)} is true.
 	 * An exception is thrown if the node is not contained within this tree.
@@ -178,7 +162,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 	 */
 	@Override
 	public boolean isEmpty() {
-		return nodes.isEmpty();
+		return nodes().isEmpty();
 	}
 
 	/**
@@ -224,15 +208,16 @@ public abstract class AbstractTree<E> implements Tree<E> {
 		return (v == null) ? this.getRoot() == null : this.getRoot().equals(v);
 	}
 
-	/**
+	/** 
 	 * Returns an iterator over the elements stored in this Tree.
-	 * The elements are returned in random order.
+	 * The elements are not in any particular order; for ordered traversals
+	 * see the pre-order and post-order methods.
 	 * @return an iterator over the elements stored in this Tree.
 	 */
 	@Override
 	public Iterator<E> iterator() {
 		ArrayList<E> elements = new ArrayList<>();
-		for (Node<E> node : nodes)
+		for (Node<E> node : nodes())
 			elements.add(node.getElement());
 		return elements.iterator();
 	}
@@ -256,15 +241,41 @@ public abstract class AbstractTree<E> implements Tree<E> {
 //	}
 	
 	/**
-	 * Returns an iterable collection over the nodes of this Tree.
-	 * The collection is randomly ordered.
+	 * Provides a way for implementing classes to access their 
+	 * collection of nodes, while allowing for implementation-specific
+	 * collections to be used.
+	 * @return an implementation-specific collection of this Tree's nodes.
+	 */
+	protected abstract Collection<Node<E>> nodes();
+	
+	/**
+	 * Returns a collection of all nodes in this Tree.
+	 * The collection need not be in any particular order
 	 * @return an iterable collection over the nodes of this Tree.
 	 */
 	@Override
-	public Collection<Node<E>> nodes() {
-		// reference actual nodes but not the instance variable nodes
-		return new HashSet<>(nodes);
+	public Collection<Node<E>> getNodes() {
+		// prevent changes to set
+		return Collections.unmodifiableCollection(nodes());
 	}
+	
+	/**
+	 * Returns a list of Nodes in this Tree in order of preorder traversal.
+	 * The order of traversal of children, unless specified in implementations, 
+	 * defaults to the order in which the children were added to the parent Node.
+	 * @return a list of Nodes in this Tree in order of preorder traversal.
+	 */
+	@Override
+	public abstract List<Node<E>> preOrderTraversal();
+	
+	/**
+	 * Returns a list of Nodes in this Tree in order of post order traversal.
+	 * The order of traversal of children, unless specified in implementations, 
+	 * defaults to the order in which the children were added to the parent Node.
+	 * @return a list of Nodes in this Tree in order of post order traversal.
+	 */
+	@Override
+	public abstract List<Node<E>> postOrderTraversal();
 	
 	@Override
 	public Node<E> setRoot(Node<E> root) {
@@ -273,11 +284,37 @@ public abstract class AbstractTree<E> implements Tree<E> {
 		}
 		Node<E> oldRoot = this.root; // save old root
 		this.root = root;
-		nodes.add(root);
-		nodes.remove(oldRoot);
+		nodes().add(root);
+		nodes().remove(oldRoot);
 		return oldRoot;
 	}
-
+	/**
+	 * Prints a nicely formatted version of this Tree 
+	 * to the specified PrintWriter
+	 * @param PrintWriter the PrintWriter to print to 
+	 */
+	public void print(PrintWriter pw) {
+		for (Node<E> v : this.preOrderTraversal()) {
+			int depth = depth(v);
+			for (int i = 0; i < depth; i++) {
+				pw.print("    |"); // print indent
+			}
+			pw.print("--> ");
+			pw.println(v);
+		}
+	}
+	
+	/**
+	 * Prints a nicely formatted version of this Tree 
+	 * to the standard output
+	 */
+	public void print() {
+		PrintWriter sysout = new PrintWriter(System.out);
+		print(sysout);
+		sysout.flush();
+		
+	}
+	
 	/**
 	 * Returns the number of nodes in this tree.
 	 * 
@@ -285,7 +322,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 	 */
 	@Override
 	public int size() {
-		return nodes.size();
+		return nodes().size();
 	}
 
 	@Override

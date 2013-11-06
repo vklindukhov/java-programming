@@ -1,6 +1,5 @@
 /**
- * General Node ADT interface, which only permits access of the data stored within it, 
- * and access to the Tree object which contains it.
+ * General Node ADT interface, which only permits access of the data stored within it. 
  * @author Max Fisher
  *
  */

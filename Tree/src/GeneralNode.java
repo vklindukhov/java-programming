@@ -4,18 +4,18 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 
-public class TreeNode<E> extends AbstractNode<E> {
+public class GeneralNode<E> extends AbstractNode<E> implements Node<E> {
 	private Node<E> parent;
 	private Collection<Node<E>> children;
 
-	public TreeNode(E element) {
+	public GeneralNode(E element) {
 		super(element);
 		this.parent = null;
 		// use for consistent ordering 
 		this.children = new LinkedHashSet<Node<E>>();
 	}
 	
-	Node<E> getParent() {
+	public Node<E> getParent() {
 		return parent;
 	}
 
@@ -29,7 +29,7 @@ public class TreeNode<E> extends AbstractNode<E> {
 	 * The collection is guaranteed to be random-access.
 	 * @returna list of this Node's children in the order in which they were added.
 	 */
-	List<Node<E>> getChildren() {
+	public List<Node<E>> getChildren() {
 		return new ArrayList<Node<E>>(children);
 	}
 

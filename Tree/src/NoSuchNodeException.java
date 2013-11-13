@@ -7,8 +7,24 @@
  */
 public class NoSuchNodeException extends IllegalArgumentException {
 	private static final long serialVersionUID = -2726076659570969276L;
-    /**
-     * Constructs an <code>IllegalArgumentException</code> with no
+	
+	/**
+	 * Creates exception with standard error message
+	 */
+	public <E> NoSuchNodeException(Tree<E> t, Node<E> v) {
+		this("Node " + v + " not present in tree " + t + ".");
+	}
+	
+	/**
+	 * Creates exception with standard error message, when the node was expected to 
+	 * be found but was not.
+	 */
+	public <E> NoSuchNodeException(Tree<E> t, Node<E> v, boolean critical) {
+		this("Node " + v + "expected to be found in " + t + ", but was not found.");
+	}
+	
+	/**
+     * Constructs an <code>NoSuchNodeException</code> with no
      * detail message.
      */
     public NoSuchNodeException() {
@@ -16,7 +32,7 @@ public class NoSuchNodeException extends IllegalArgumentException {
     }
 
     /**
-     * Constructs an <code>IllegalArgumentException</code> with the
+     * Constructs an <code>NoSuchNodeException</code> with the
      * specified detail message.
      *
      * @param   s   the detail message.

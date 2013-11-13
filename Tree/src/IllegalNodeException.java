@@ -9,7 +9,14 @@ public class IllegalNodeException extends IllegalArgumentException {
 	private static final long serialVersionUID = -2108960235681036527L;
 
 	/**
-     * Constructs an <code>IllegalArgumentException</code> with no
+	 * Creates exception with standard error message
+	 */
+	public <E> IllegalNodeException(Tree<E> t, Node<E> v) {
+		this("Node " + v + " not allowed in tree " + t + " (incorrect type).");
+	}
+	
+	/**
+     * Constructs an <code>IllegalNodeException</code> with no
      * detail message.
      */
     public IllegalNodeException() {
@@ -17,7 +24,7 @@ public class IllegalNodeException extends IllegalArgumentException {
     }
 
     /**
-     * Constructs an <code>IllegalArgumentException</code> with the
+     * Constructs an <code>IllegalNodeException</code> with the
      * specified detail message.
      *
      * @param   s   the detail message.

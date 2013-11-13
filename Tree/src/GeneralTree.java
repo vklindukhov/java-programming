@@ -28,14 +28,16 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 * Default constructor which does not set root Node.
 	 */
 	public GeneralTree() {
-		this(null);
+		nodes = new HashSet<>();
+		// can't use setRoot(null) as it throws an exception
 	}
 	
 	/**
 	 * Adds the given Tree as a subtree to this Tree, attaching the root node
 	 * of the new subtree to the specified parent node. An exception is thrown
 	 * if the parent node is not contained within this tree.
-	 * @param subtree the Tree to append to this Tree
+	 * If the given tree is null, this method does nothing.
+	 * @param subtree the Tree to append to this Tree.
 	 * @param the parent Node to attach the subtree to
 	 * @throws DuplicateNodeException if the subtree and this Tree contain a common node
 	 * @throws NoSuchNodeException if the given parent Node 
@@ -49,10 +51,10 @@ public class GeneralTree<E> extends AbstractTree<E> {
 		Collection <Node<E>> commonNodes = this.nodes();
 		commonNodes.retainAll(subTree.nodes());
 		if (!Collections.disjoint(nodes(), subTree.nodes()))
-			throw new DuplicateNodeException("Cannot add the following duplicate nodes to Tree " + this + ": " + commonNodes);
+			throw new DuplicateNodeException(this, commonNodes);
 		// link in 
-		((TreeNode<E>) parent).addChild(subTree.getRoot());
-		((TreeNode<E>) subTree.getRoot()).setParent(parent);
+		((GeneralNode<E>) parent).addChild(subTree.getRoot());
+		((GeneralNode<E>) subTree.getRoot()).setParent(parent);
 		
 		nodes().addAll(subTree.nodes());
 	}
@@ -70,9 +72,9 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 */
 	public Node<E> add(E element, Node<E> parent) throws NoSuchNodeException {
 		checkNode(parent);
-		TreeNode<E> child = new TreeNode<>(element);
+		GeneralNode<E> child = new GeneralNode<>(element);
 		//child.setContainingTree(this);
-		((TreeNode<E>) parent).addChild(child);
+		((GeneralNode<E>) parent).addChild(child);
 		child.setParent(parent);
 		nodes().add(child);
 		return child;	
@@ -90,16 +92,16 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 * @throws IllegalNodeException if the new Node type is incompatible with this Tree
 	 * @throws NoSuchNodeException if the parent node cannot be found in this Tree
 	 */
-	public void addNode(Node<E> v, Node<E> parent) 
+	public void add(Node<E> v, Node<E> parent) 
 			throws DuplicateNodeException, IllegalNodeException, NoSuchNodeException {
 		checkNodeType(v);
 		checkNode(parent);
 		if (containsNode(v))
-			throw new DuplicateNodeException("Node " + v + " is already contained in " + this);
+			throw new DuplicateNodeException(this, v);
 		
 		// link in new node
-		((TreeNode<E>) parent).addChild(v);
-		((TreeNode<E>) v).setParent(parent);
+		((GeneralNode<E>) parent).addChild(v);
+		((GeneralNode<E>) v).setParent(parent);
 		nodes().add(v);
 	}
 	
@@ -112,7 +114,7 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 */
 	public List<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException {
 		checkNode(v); // also handles null argument
-		return ((TreeNode<E>) v).getChildren();
+		return ((GeneralNode<E>) v).getChildren();
 	}
 	
 	/**
@@ -125,7 +127,7 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 */
 	public Node<E> getParent(Node<E> v) throws NoSuchNodeException {
 		checkNode(v); // also handles null argument
-		return isRoot(v) ? null : ((TreeNode<E>) v).getParent();
+		return isRoot(v) ? null : ((GeneralNode<E>) v).getParent();
 	}
 
 	/**
@@ -139,7 +141,7 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 */
 	protected void checkNode(Node<E> v) throws NoSuchNodeException {
 		if (!containsNode(v))
-			throw new NoSuchNodeException("Node " + v + " not present in tree " + this);
+			throw new NoSuchNodeException(this, v);
 	}
 	/**
 	 * Ensures that the given Node is the correct type for this Tree
@@ -150,9 +152,8 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	 * @throws IllegalNodeException if the type of the given node is inappropriate for this Tree.
 	 */
 	protected void checkNodeType(Node<E> v) throws IllegalNodeException {
-		if (!(v instanceof TreeNode))
-			throw new IllegalNodeException("Node " + v + " not allowed in tree " + this + 
-					" (must be subtype of GeneralTreeNode");
+		if (!(v instanceof GeneralNode))
+			throw new IllegalNodeException(this, v);
 	}
 	
 //	/**
@@ -184,8 +185,8 @@ public class GeneralTree<E> extends AbstractTree<E> {
 		GeneralTree<E> subtree = new GeneralTree<>(v);
 		
 		// unlink from current tree
-		((TreeNode<E>) getParent(v)).removeChild(v);
-		((TreeNode<E>) v).setParent(null);
+		((GeneralNode<E>) getParent(v)).removeChild(v);
+		((GeneralNode<E>) v).setParent(null);
 		
 		// remove all children of v from this Tree and add to other tree; 
 		// don't need to change structure
@@ -208,11 +209,10 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	public E removeNode(Node<E> v) throws UnsupportedOperationException, NoSuchNodeException {
 		if (!isExternal(v)) // also handles NoSuchNodeException
 			throw new UnsupportedOperationException("Node " + v + "is not external in Tree " + this);
-		((TreeNode<E>) getParent(v)).removeChild(v);
-		((TreeNode<E>) v).setParent(null);
+		((GeneralNode<E>) getParent(v)).removeChild(v);
+		((GeneralNode<E>) v).setParent(null);
 		if (!nodes().remove(v)) //should be true always
-			throw new NoSuchNodeException("Node " + v + "expected to be found in stored nodes of " + this 
-					+ ", but was not found.");
+			throw new NoSuchNodeException(this, v, true);
 		return v.getElement();
 	}
 	/**

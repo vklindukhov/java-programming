@@ -48,7 +48,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 	 */
 	protected void checkNode(Node<E> v) {
 		if (!containsNode(v))
-			throw new NoSuchNodeException("Node " + v + " not present in tree " + this);
+			throw new NoSuchNodeException(this, v);
 	}
 	/**
 	 * Ensures that the given Node is the correct type for this Tree
@@ -60,8 +60,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 	 */
 	protected void checkNodeType(Node<E> v) {
 		if (!(v instanceof AbstractNode))
-			throw new IllegalNodeException("Node " + v + " not allowed in tree " + this + 
-					" (must be subtype of AbstractNode");
+			throw new IllegalNodeException(this, v);
 	}
 	
 	@Override
@@ -317,7 +316,6 @@ public abstract class AbstractTree<E> implements Tree<E> {
 	
 	/**
 	 * Returns the number of nodes in this tree.
-	 * 
 	 * @return the number of nodes in this tree.
 	 */
 	@Override
@@ -327,6 +325,6 @@ public abstract class AbstractTree<E> implements Tree<E> {
 
 	@Override
 	public String toString() {
-		return "[" + root.toString() + " (" + size + ") ]";
+		return "[" + root.toString() + " (" + size + ")]";
 	}
 }

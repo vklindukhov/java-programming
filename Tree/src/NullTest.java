@@ -9,7 +9,7 @@ public class NullTest {
 	public static void main(String[] args) {
 		List<Node<String>> nodes = new ArrayList<Node<String>>();
 		for (int i = 0; i < 10; i++) {
-			nodes.add(new TreeNode<String>(String.valueOf(i)));
+			nodes.add(new GeneralNode<String>(String.valueOf(i)));
 		}
 		System.out.println(nodes);
 		Node<String> a = nodes.get(1);

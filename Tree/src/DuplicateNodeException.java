@@ -1,3 +1,5 @@
+import java.util.Collection;
+
 /**
  * Thrown to indicate that the program is attempting to add a Node
  * to a Tree which already contains that Node.
@@ -9,7 +11,25 @@ public class DuplicateNodeException extends IllegalArgumentException {
 	private static final long serialVersionUID = 7389638155968369076L;
 
 	/**
-     * Constructs an <code>IllegalArgumentException</code> with no
+	 * Creates a standard error message indicating that the 
+	 * specified node is already contained by the specified tree.
+	 */
+	public <E> DuplicateNodeException(Tree<E> t, Node<E> v) {
+		// what would be nice: node v is already a child of node (parent) in tree t.
+		this("Node " + v + " is already contained in tree " + t + ".");
+	}
+	
+	/**
+	 * Creates a standard error message indicating that the 
+	 * specified nodes are already contained by the specified tree.
+	 */
+	public <E> DuplicateNodeException(Tree<E> t, Collection<Node<E>> c) {
+		this("Cannot add the following duplicate nodes to tree " + t + ": " + c);
+	}
+	
+	
+	/**
+     * Constructs an <code>DuplicateNodeException</code> with no
      * detail message.
      */
     public DuplicateNodeException() {
@@ -17,7 +37,7 @@ public class DuplicateNodeException extends IllegalArgumentException {
     }
 
     /**
-     * Constructs an <code>IllegalArgumentException</code> with the
+     * Constructs an <code>DuplicateNodeException</code> with the
      * specified detail message.
      *
      * @param   s   the detail message.

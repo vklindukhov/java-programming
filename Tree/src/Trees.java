@@ -55,6 +55,7 @@ public class Trees {
 		}
 		return pathLength;
 	}
+	@SuppressWarnings("unused")
 	private static void pathLengthTest() {
 		GeneralTree<Character> t = new GeneralTree<>();
 		t.setRoot(new GeneralNode<>('R'));

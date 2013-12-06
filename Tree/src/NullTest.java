@@ -7,13 +7,13 @@ import java.util.ArrayList;
  */
 public class NullTest {
 	public static void main(String[] args) {
-		List<Node<String>> nodes = new ArrayList<Node<String>>();
+		List<TreeNode<String>> nodes = new ArrayList<TreeNode<String>>();
 		for (int i = 0; i < 10; i++) {
 			nodes.add(new GeneralNode<String>(String.valueOf(i)));
 		}
 		System.out.println(nodes);
-		Node<String> a = nodes.get(1);
-		Node<String> b = nodes.get(6);
+		TreeNode<String> a = nodes.get(1);
+		TreeNode<String> b = nodes.get(6);
 		a = b;
 		b = a;
 		a = null;

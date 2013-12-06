@@ -1,6 +1,4 @@
 import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -8,18 +6,7 @@ import java.util.List;
  * where nodes can have an arbitrary number of children.
  * Null nodes are not permitted.
  */
-public interface Tree<E> extends Iterable<E> {
-	/** 
-	 * Returns whether the two nodes satisfy an ancestor-descendent 
-	 * relationship in this tree. If u and v refer to the same Node,
-	 * then this method returns true. An exception is thrown 
-	 * if either node is not contained in this tree.
-	 * @param u the node to check as an ancestor node of v
-	 * @param v the node to check as a descendent node of u
-	 * @return True if u is an ancestor of v, otherwise false.
-	 * @throws NoSuchNodeException if either node is not contained by this tree
-	 */
-	public boolean ancestorOf(Node<E> u, Node<E> v) throws NoSuchNodeException;
+public interface Tree<E> {
 	
 	/**
 	 * Returns whether this tree stores the given element
@@ -33,11 +20,11 @@ public interface Tree<E> extends Iterable<E> {
 	 * @param v the Node to search for
 	 * @return True if this tree contains the specified Node, otherwise false
 	 */
-	public boolean containsNode(Node<E> v);
+	public boolean containsNode(TreeNode<E> v);
 	
 	/**
 	 * Returns the depth of the specified node. The depth of a node 
-	 * is defined as the number ancestors that node has, 
+	 * is defined as the number of ancestors that node has, 
 	 * excluding the node itself.
 	 * Node that the sum of the depth and the height of any node in a tree
 	 * is always equal to that tree's height.
@@ -45,47 +32,13 @@ public interface Tree<E> extends Iterable<E> {
 	 * @return the depth of the specified node, in this tree
 	 * @throws NoSuchNodeException if the specified node is not in this tree
 	 */
-	public int depth(Node<E> v) throws NoSuchNodeException;
+	public int depth(TreeNode<E> v) throws NoSuchNodeException;
 	
-	/**
-	 * Returns a random-access List of the children of a given parent node, 
-	 * in the order that they were added to that node. If the given node is external,
-	 * an empty list is returned. An exception is thrown 
-	 * if the node is not contained within this tree.
-	 * 
-	 * @return a random-access List of the children of a given node, if that
-	 *         node is contained within this tree
-	 * @throws NoSuchNodeException if the given node is not contained in this tree
-	 */
-	public List<Node<E>> getChildren(Node<E> v) throws NoSuchNodeException;
-	
-	/**
-	 * Returns an iterable collection of all descendants of a given node.
-	 * The collection need not be in any particular order.
-	 * That is, this method returns a collection of all nodes for which 
-	 * {@code ancestorOf(v, node)} is true.
-	 * An exception is thrown if the node is not contained within this tree.
-	 * 
-	 * @return an iterable collection of all descendents of a given node, if that
-	 *         node is contained within this tree
-	 * @throws NoSuchNodeException if the given node is not contained in this tree
-	 */
-	public Collection<Node<E>> getDescendants(Node<E> v) throws NoSuchNodeException;
-	
-	/**
-	 * Returns the parent of a given node. 
-	 * An exception is thrown if the node is not contained within this tree.
-	 * @param the node to find the parent of
-	 * @return the parent of the given node
-	 * @throws NoSuchNodeException if the given node is not contained in this tree
-	 */
-	public Node<E> getParent(Node<E> v) throws NoSuchNodeException;
-
 	/** 
 	 * Returns the root node of this tree, or null if this tree has no root.
 	 * @return the root node of this tree, or null if this tree has no root.
 	 */
-	public Node<E> getRoot();
+	public TreeNode<E> getRoot();
 
 	/**
 	 * Returns the height of this Tree.
@@ -112,7 +65,7 @@ public interface Tree<E> extends Iterable<E> {
 	 * @return the height of the specified node, in this tree
 	 * @throws NoSuchNodeException if the specified node is not in this tree
 	 */
-	public int height(Node<E> v) throws NoSuchNodeException;
+	public int height(TreeNode<E> v) throws NoSuchNodeException;
 
 	/** 
 	 * Returns true if this tree is empty, otherwise false.
@@ -120,59 +73,21 @@ public interface Tree<E> extends Iterable<E> {
 	 */
 	public boolean isEmpty();
 
-	/** 
-	 * Returns true if the given node is external, otherwise false. More precisely, 
-	 * returns true if the given node has no children, or equivalently, 
-	 * if {@code this.getChildren(v)} returns an empty list.
-	 * Note that {@code this.isInternal(v)} and {@code this.isExternal(v)} 
-	 * always return opposite values.
-	 * An exception is thrown if the given node is not contained within this tree.
-	 * @return true if the given node is external, otherwise false.
-	 * @throws NoSuchNodeException if the given node is not contained in this tree
-	 */
-	public boolean isExternal(Node<E> v) throws NoSuchNodeException;
-	
-	/** 
-	 * Returns true if the given node is internal, otherwise false. More precisely, 
-	 * returns true if the given node has at least one child in this tree, or equivalently, 
-	 * if {@code this.getChildren(v)} returns a non-empty list.
-	 * Note that {@code this.isInternal(v)} and {@code this.isExternal(v)} 
-	 * always return opposite values.
-	 * An exception is thrown if the given node is not contained within this tree.
-	 * @return true if the given node is internal, otherwise false.
-	 * @throws NoSuchNodeException if the given node is not contained in this tree
-	 */
-	
-	public boolean isInternal(Node<E> v) throws NoSuchNodeException;
-	
-	/** 
+	/**
 	 * Returns true if the given node is the root of this tree, otherwise false.
-	 * @return true if the given node is the root of this tree, otherwise false.
+	 * More precisely, returns the value of 
+	 * {@code (v == null) ? this.getRoot() == null : this.getRoot().equals(v)}
+	 * The result of {@code this.isRoot(null)} is the same as {@code this.isEmpty()}.
 	 */
-	public boolean isRoot(Node<E> v);
-	
-	/** 
-	 * Returns an iterator over the elements stored in this Tree.
-	 * The elements are not in any particular order; for ordered traversals
-	 * see the pre-order and post-order methods.
-	 * @return an iterator over the elements stored in this Tree.
-	 */
-	public Iterator<E> iterator();
+	public boolean isRoot(TreeNode<E> v);
 	
 	/**
-	 * Returns an iterable collection over the nodes of this Tree.
-	 * The collection need not be in any particular order.
-	 * @return an iterable collection over the nodes of this Tree.
-	 */
-	public Collection<Node<E>> getNodes();
-	
-	/**
-	 * Returns a list of Nodes in this Tree in order of preorder traversal.
+	 * Returns a list of Nodes in this Tree in order of pre-order traversal.
 	 * The order of traversal of children, unless specified in implementations, 
 	 * defaults to the order in which the children were added to the parent Node.
-	 * @return a list of Nodes in this Tree in order of preorder traversal.
+	 * @return a list of Nodes in this Tree in order of pre-order traversal.
 	 */
-	public List<Node<E>> preOrderTraversal();
+	public List<TreeNode<E>> preOrderTraversal();
 	
 	/**
 	 * Returns a list of Nodes in this Tree in order of post order traversal.
@@ -180,13 +95,14 @@ public interface Tree<E> extends Iterable<E> {
 	 * defaults to the order in which the children were added to the parent Node.
 	 * @return a list of Nodes in this Tree in order of post order traversal.
 	 */
-	public List<Node<E>> postOrderTraversal();
+	public List<TreeNode<E>> postOrderTraversal();
 	
 	/** 
-	 * Sets the root of this tree to the given node, and returns the previous root node
-	 * @return The previous root node of this tree
+	 * Sets the root of this tree to the given node, and returns the previous root node.
+	 * Only the root node is allowed to be set to null.
+	 * @return The previous root node of this tree, or null if there was no previous root node.
 	 */
-	public Node<E> setRoot(Node<E> root);
+	public TreeNode<E> setRoot(TreeNode<E> root);
 	
 	/**
 	 * Prints a nicely formatted version of this Tree 
@@ -200,6 +116,15 @@ public interface Tree<E> extends Iterable<E> {
 	 * to the standard output
 	 */
 	public void print();
+	
+//	/**
+//	 * Constructs a new Tree identical to this Tree,
+//	 * but using different nodes. The new nodes contain the 
+//	 * same elements as the old nodes, however.
+//	 * @return a Tree identical to this one,
+//	 * but constructed using different nodes.
+//	 */
+//	public Tree<E> clone();
 	
 	/** 
 	 * Returns the number of nodes in this tree.

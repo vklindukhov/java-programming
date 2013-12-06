@@ -48,36 +48,46 @@ public class Trees {
 	 * @return the path length of the tree formed by all descendents
 	 * of the specified node, and all the parents of that node.
 	 */
-	private static <E> int localPathLength(Node<E> v, int depth) {
+	private static <E> int localPathLength(TreeNode<E> v, int depth) {
 		int pathLength = depth; // account for path length of v itself
-		for (Node<E> child : v.getChildren()) {
+		for (TreeNode<E> child : v.getChildren()) {
 			pathLength += localPathLength(child, depth+1); // depth is calculated anyway
 		}
 		return pathLength;
 	}
-	@SuppressWarnings("unused")
 	private static void pathLengthTest() {
-		GeneralTree<Character> t = new GeneralTree<>();
-		t.setRoot(new GeneralNode<>('R'));
-		Node<Character> A = t.add('A', t.getRoot());
-		Node<Character> B = t.add('B', t.getRoot());
-		Node<Character> C = t.add('C', t.getRoot());
-		Node<Character> D = t.add('D', A);
-		Node<Character> E = t.add('E', B);
-		Node<Character> F = t.add('F', B);
-		Node<Character> G = t.add('G', C);
-		Node<Character> H = t.add('H', C);
-		Node<Character> I = t.add('I', C);
-		Node<Character> J = t.add('J', F);
-		Node<Character> K = t.add('K', F);
-		Node<Character> L = t.add('L', F);
-		Node<Character> M = t.add('M', G);
-		Node<Character> N = t.add('N', K);
-		Node<Character> O = t.add('O', L);
-		Node<Character> P = t.add('P', O);
-		Node<Character> Q = t.add('Q', I);
-		t.add((GeneralTree<Character>)null, I);
+		AbstractTree<Character> t = new GeneralTree<>();
+		GeneralNode<Character> A = new GeneralNode<>('A');
+		GeneralNode<Character> B = new GeneralNode<>('B');
+		GeneralNode<Character> C = new GeneralNode<>('C');
+		GeneralNode<Character> D = new GeneralNode<>('D');
+		GeneralNode<Character> E = new GeneralNode<>('E');
+		GeneralNode<Character> F = new GeneralNode<>('F');
+		GeneralNode<Character> G = new GeneralNode<>('G');
+		GeneralNode<Character> H = new GeneralNode<>('H');
+		GeneralNode<Character> I = new GeneralNode<>('I');
+		GeneralNode<Character> J = new GeneralNode<>('J');
+		GeneralNode<Character> K = new GeneralNode<>('K');
+		GeneralNode<Character> L = new GeneralNode<>('L');
+		GeneralNode<Character> M = new GeneralNode<>('M');
+		GeneralNode<Character> N = new GeneralNode<>('N');
+		GeneralNode<Character> O = new GeneralNode<>('O');
+		GeneralNode<Character> P = new GeneralNode<>('P');
+		GeneralNode<Character> Q = new GeneralNode<>('Q');
+		GeneralNode<Character> R = new GeneralNode<>('R');
 		
+		t.setRoot(R);
+		R.addChildren(A, B, C);
+		A.addChild(D);
+		B.addChildren(E, F);
+		C.addChildren(G, H, I);
+		F.addChildren(J, K, L);
+		G.addChild(M);
+		K.addChild(N);
+		L.addChild(O);
+		O.addChild(P);
+		I.addChild(Q);
+
 		System.out.println("Path length should be 43");
 		System.out.println("Path length calculated: " + pathLength(t));
 		t.print();

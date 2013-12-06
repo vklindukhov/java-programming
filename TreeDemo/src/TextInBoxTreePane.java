@@ -46,17 +46,17 @@ import org.abego.treelayout.TreeLayout;
 public class TextInBoxTreePane extends JComponent {
 	private static final long serialVersionUID = -6159918328498723038L;
 	
-		private final TreeLayout<Node<String>> treeLayout;
+		private final TreeLayout<TreeNode<String>> treeLayout;
 
-        private TreeForTreeLayout<Node<String>> getTree() {
+        private TreeForTreeLayout<TreeNode<String>> getTree() {
                 return treeLayout.getTree();
         }
 
-        private Iterable<Node<String>> getChildren(Node<String> parent) {
+        private Iterable<TreeNode<String>> getChildren(TreeNode<String> parent) {
                 return getTree().getChildren(parent);
         }
 
-        private Rectangle2D.Double getBoundsOfNode(Node<String> node) {
+        private Rectangle2D.Double getBoundsOfNode(TreeNode<String> node) {
                 return treeLayout.getNodeBounds().get(node);
         }
 
@@ -66,7 +66,7 @@ public class TextInBoxTreePane extends JComponent {
          *
          * @param treeLayout
          */
-        public TextInBoxTreePane(TreeLayout<Node<String>> treeLayout) {
+        public TextInBoxTreePane(TreeLayout<TreeNode<String>> treeLayout) {
                 this.treeLayout = treeLayout;
 
                 Dimension size = treeLayout.getBounds().getBounds().getSize();
@@ -81,12 +81,12 @@ public class TextInBoxTreePane extends JComponent {
         private final static Color BORDER_COLOR = Color.darkGray;
         private final static Color TEXT_COLOR = Color.black;
 
-        private void paintEdges(Graphics g, Node<String> parent) {
+        private void paintEdges(Graphics g, TreeNode<String> parent) {
                 if (!getTree().isLeaf(parent)) {
                         Rectangle2D.Double b1 = getBoundsOfNode(parent);
                         double x1 = b1.getCenterX();
                         double y1 = b1.getCenterY();
-                        for (Node<String> child : getChildren(parent)) {
+                        for (TreeNode<String> child : getChildren(parent)) {
                                 Rectangle2D.Double b2 = getBoundsOfNode(child);
                                 g.drawLine((int) x1, (int) y1, (int) b2.getCenterX(),
                                                 (int) b2.getCenterY());
@@ -96,7 +96,7 @@ public class TextInBoxTreePane extends JComponent {
                 }
         }
 
-        private void paintBox(Graphics g, Node<String> textInBox) {
+        private void paintBox(Graphics g, TreeNode<String> textInBox) {
                 // draw the box in the background
                 g.setColor(BOX_COLOR);
                 Rectangle2D.Double box = getBoundsOfNode(textInBox);
@@ -125,7 +125,7 @@ public class TextInBoxTreePane extends JComponent {
                 paintEdges(g, getTree().getRoot());
 
                 // paint the boxes
-                for (Node<String> textInBox : treeLayout.getNodeBounds().keySet()) {
+                for (TreeNode<String> textInBox : treeLayout.getNodeBounds().keySet()) {
                         paintBox(g, textInBox);
                 }
         }

@@ -14,7 +14,7 @@ public class DuplicateNodeException extends IllegalArgumentException {
 	 * Creates a standard error message indicating that the 
 	 * specified node is already contained by the specified tree.
 	 */
-	public <E> DuplicateNodeException(Tree<E> t, Node<E> v) {
+	public <E> DuplicateNodeException(Tree<E> t, TreeNode<E> v) {
 		// what would be nice: node v is already a child of node (parent) in tree t.
 		this("Node " + v + " is already contained in tree " + t + ".");
 	}
@@ -23,7 +23,7 @@ public class DuplicateNodeException extends IllegalArgumentException {
 	 * Creates a standard error message indicating that the 
 	 * specified nodes are already contained by the specified tree.
 	 */
-	public <E> DuplicateNodeException(Tree<E> t, Collection<Node<E>> c) {
+	public <E> DuplicateNodeException(Tree<E> t, Collection<TreeNode<E>> c) {
 		this("Cannot add the following duplicate nodes to tree " + t + ": " + c);
 	}
 	

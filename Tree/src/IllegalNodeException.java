@@ -11,8 +11,8 @@ public class IllegalNodeException extends IllegalArgumentException {
 	/**
 	 * Creates exception with standard error message
 	 */
-	public <E> IllegalNodeException(Tree<E> t, Node<E> v) {
-		this("Node " + v + " not allowed in tree " + t + " (incorrect type).");
+	public <E> IllegalNodeException(TreeNode<E> v) {
+		this("Illegal node type for Node " + v + ".");
 	}
 	
 	/**

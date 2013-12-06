@@ -11,7 +11,7 @@ public class NoSuchNodeException extends IllegalArgumentException {
 	/**
 	 * Creates exception with standard error message
 	 */
-	public <E> NoSuchNodeException(Tree<E> t, Node<E> v) {
+	public <E> NoSuchNodeException(Tree<E> t, TreeNode<E> v) {
 		this("Node " + v + " not present in tree " + t + ".");
 	}
 	
@@ -19,7 +19,7 @@ public class NoSuchNodeException extends IllegalArgumentException {
 	 * Creates exception with standard error message, when the node was expected to 
 	 * be found but was not.
 	 */
-	public <E> NoSuchNodeException(Tree<E> t, Node<E> v, boolean critical) {
+	public <E> NoSuchNodeException(Tree<E> t, TreeNode<E> v, boolean critical) {
 		this("Node " + v + "expected to be found in " + t + ", but was not found.");
 	}
 	

@@ -42,31 +42,30 @@ public class SwingDemo {
          */
         public static void main(String[] args) {
                 // get the sample tree
-        		Node<String> root = new GeneralNode<String>("Hello");
+        		GeneralNode<String> root = new GeneralNode<String>("Hello");
         		GeneralTreeWrapper tree = new GeneralTreeWrapper(new GeneralTree<String>(root));
-        		Node<String> initial = tree.add("Zero", root);
+        		GeneralNode<String> initial = root.addChild("Zero");
         		@SuppressWarnings("unchecked")
-				Node<String>[] nodes = (Node<String>[]) new Node[12];
+				GeneralNode<String>[] nodes = (GeneralNode<String>[]) new GeneralNode[12];
         		nodes[0] = initial;
         		for (int i = 1; i < 12; i++) {
-        			nodes[i] = tree.add(String.valueOf("A"), nodes[i-1]);
-        			tree.add(String.valueOf("B"), nodes[i/2]);
-        			tree.add(String.valueOf("C"), nodes[i/3]);
+        			nodes[i] = nodes[i-1].addChild(String.valueOf("A"));
+        			nodes[i/2].addChild(String.valueOf("B"));
+        			nodes[i/3].addChild(String.valueOf("C"));
         		}
-        		tree = new GeneralTreeWrapper((GeneralTree<String>) tree.removeSubtree(initial));
         		
         		tree.print();
                 // setup the tree layout configuration
                 double gapBetweenLevels = 50;
                 double gapBetweenNodes = 10;
-                DefaultConfiguration<Node<String>> configuration = new DefaultConfiguration<Node<String>>(
+                DefaultConfiguration<TreeNode<String>> configuration = new DefaultConfiguration<TreeNode<String>>(
                                 gapBetweenLevels, gapBetweenNodes);
 
                 // create the NodeExtentProvider for TextInBox nodes
                 TextInBoxNodeExtentProvider nodeExtentProvider = new TextInBoxNodeExtentProvider();
 
                 // create the layout
-                TreeLayout<Node<String>> treeLayout = new TreeLayout<Node<String>>(tree,
+                TreeLayout<TreeNode<String>> treeLayout = new TreeLayout<TreeNode<String>>(tree,
                                 nodeExtentProvider, configuration);
 
                 // Create a panel that draws the nodes and edges and show the panel

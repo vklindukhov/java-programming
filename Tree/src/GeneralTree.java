@@ -31,7 +31,7 @@ public class GeneralTree<E> extends AbstractTree<E> {
 	@Override
 	public TreeNode<E> setRoot(TreeNode<E> root) {
 		if (root != null) {
-		GeneralNode<E> newRoot = GeneralNode.checkNodeType(root);
+		GeneralNode<E> newRoot = new GeneralNode<E>().checkNodeType(root);
 		newRoot.setAllContainingTree(this);
 		}
 		TreeNode<E> oldRoot = super.setRoot(root);

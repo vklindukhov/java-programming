@@ -3,8 +3,8 @@ import java.util.List;
 
 /**
  * Abstract Node class that defines general Node method implementations.
- * Provides fundamental methods for tree nodes, with the notable exception 
- * of methods for addition and deletion of nodes.
+ * Provides fundamental methods for tree nodes. The notable exception 
+ * of methods for addition and deletion of nodes, which are not publicly visible.
  * @author Max Fisher
  *
  * @param <E> the type of object to store in this Node
@@ -33,8 +33,6 @@ public abstract class AbstractNode<E> implements TreeNode<E> {
 	/**
 	 * Checks whether the specified tree contains this Node.
 	 * A null containing Tree signifies no containing Tree
-	 * The value returned by this method is identical to 
-	 * {@code (t == null) ? containingTree == null : t.equals(this.getContainingTree())}
 	 * @param t the tree to check for presence of this Node
 	 * @return True if the given tree contains this Node, otherwise false
 	 */
@@ -47,6 +45,15 @@ public abstract class AbstractNode<E> implements TreeNode<E> {
 	 * @return a list of this Node's children in the order in which they were added.
 	 */
 	public abstract List<TreeNode<E>> getChildren();
+	
+	/**
+	 * Adds the given node as a child of this Node, with the given index.
+	 * Subclasses may choose not to allow null or duplicate nodes, and should
+	 * take appropriate action to prevent this if so.
+	 * @param index the index to be associated with this child node.
+	 * @param v the new child Node of this Node.
+	 */
+	protected abstract void addChild(int index, TreeNode<E> v);
 	
 	@Override
 	public List<TreeNode<E>> getDescendants() {

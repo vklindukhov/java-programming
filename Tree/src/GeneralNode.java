@@ -25,7 +25,20 @@ public class GeneralNode<E> extends ContainingNode<E> implements MutableNode<E> 
 		super(element);
 		this.children = new ArrayList<GeneralNode<E>>();
 	}
-
+	
+	/**
+	 * Creates a new Node object containing the given object,
+	 * and adds it as a child Node of this node. A reference 
+	 * to the newly created Node is returned.
+	 * @param element the object to be contained by the new Node.
+	 * @return a reference to the newly created child Node.
+	 */
+	public GeneralNode<E> addChild(E element) {
+		GeneralNode<E> newChild = new GeneralNode<E>(element);
+		addChild(newChild);
+		return newChild;
+	}
+	
 	@Override
 	public void addChild(int index, TreeNode<E> v)  
 		throws DuplicateNodeException, IllegalNodeException, IndexOutOfBoundsException {

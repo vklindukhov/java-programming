@@ -165,6 +165,31 @@ public class BinaryNode<E> extends ContainingNode<E> implements
 		return true;
 	}
 
+	/**
+	 * Creates a new Node object containing the given object,
+	 * and sets it as a left child Node of this node. A reference 
+	 * to the newly created Node is returned.
+	 * @param element the object to be contained by the new Node.
+	 * @return a reference to the newly created child Node.
+	 */
+	public BinaryNode<E> addLeft(E element) {
+		BinaryNode<E> newChild = new BinaryNode<E>(element);
+		setLeft(newChild);
+		return newChild;
+	}
+	/**
+	 * Creates a new Node object containing the given object,
+	 * and sets it as a right child Node of this node. A reference 
+	 * to the newly created Node is returned.
+	 * @param element the object to be contained by the new Node.
+	 * @return a reference to the newly created child Node.
+	 */
+	public BinaryNode<E> addRight(E element) {
+		BinaryNode<E> newChild = new BinaryNode<E>(element);
+		setLeft(newChild);
+		return newChild;
+	}
+	
 	@Override
 	public BinaryTreeNode<E> right() {
 		return children[1];

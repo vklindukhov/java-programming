@@ -38,17 +38,17 @@ public class GeneralNode<E> extends ContainingNode<E> implements MutableNode<E> 
 		addChild(newChild);
 		return newChild;
 	}
-	
-	@Override
-	public void addChild(int index, TreeNode<E> v)  
-		throws DuplicateNodeException, IllegalNodeException, IndexOutOfBoundsException {
-		GeneralNode<E> child = checkNodeType(v);
-		checkDuplicate(child);
-		// actually add
-		child.setParent(this);
-		child.setAllContainingTree(this.getContainingTree());
-		children.add(index, child);
-	}
+//	
+//	@Override
+//	public void addChild(int index, TreeNode<E> v)  
+//		throws DuplicateNodeException, IllegalNodeException, IndexOutOfBoundsException {
+//		GeneralNode<E> child = checkNodeType(v);
+//		checkDuplicate(child);
+//		// actually add
+//		child.setParent(this);
+//		child.setAllContainingTree(this.getContainingTree());
+//		children.add(index, child);
+//	}
 
 	/**
 	 * Adds the given node as a child node of this Node
@@ -67,17 +67,6 @@ public class GeneralNode<E> extends ContainingNode<E> implements MutableNode<E> 
 		children.add(child);
 	}
 		
-	/**
-	 * Convenience method to add multiple children at once,
-	 * using {@code addChild(AbstractGeneralNode<E> v)}.
-	 * @param nodes
-	 */
-	@SafeVarargs
-	public final void addChildren(GeneralNode<E> ... nodes) {
-		for (GeneralNode<E> v : nodes)
-			addChild(v);
-	}
-	
 	/**
 	 * Convenience method to add multiple children at once,
 	 * using {@code addChild(TreeNode<E> v)}.
@@ -110,16 +99,6 @@ public class GeneralNode<E> extends ContainingNode<E> implements MutableNode<E> 
 	@Override
 	public List<TreeNode<E>> getChildren() {
 		return new ArrayList<TreeNode<E>>(children);
-	}
-
-	@Override
-	protected int getIndex(TreeNode<E> child) {
-		return children.indexOf(child);
-	}
-
-	@Override
-	protected TreeNode<E> removeChild(int index) throws IndexOutOfBoundsException {
-		return children.remove(index);
 	}
 	
 	@Override

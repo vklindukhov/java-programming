@@ -8,36 +8,16 @@
 public interface MutableNode<E> extends TreeNode<E> {
 	
 	/**
-	 * Adds the specified node as a child node of this Node with the 
-	 * specified index. The child node must not be null or otherwise any type
-	 * not allowed by {@code checkNodeType()}, must not be an
-	 * existing child of this Node, or have the same containing Tree 
-	 * at the time when it is added to this Node. 
-	 * The index of the new child node must be between zero and 
-	 * the current number of children of this Node.
-	 * @param index the index at which to add the child to this Node's list of children
-	 * @param child the new child node of this Node
-	 * @throws DuplicateNodeException if the specified node is an existing child of this Node, 
-	 * or has the same containing Tree as this one at the time when it is added to this Node
-	 * @throws IllegalNodeException if the specified node is of an illegal type
-	 * (for example null). Subclasses may be more restrictive and disallow other types.
-	 * @throws IndexOutOfBoundsException if the index supplied is negative 
-	 * or greater than the number of children this Node has at the time 
-	 * this method executes.
-	 */
-	public void addChild(int index, TreeNode<E> child) 
-			throws DuplicateNodeException, IllegalNodeException, IndexOutOfBoundsException;
-	
-	/**
-	 * Adds the specified node as a child node of this Node, with index equal
-	 * to the number of children this node currently has. (Optional operation)
+	 * Adds the specified node as a child node of this Node. Implementations
+	 * by default should do this in such a way that {@code this.getChildren()}
+	 * returns a list of the children in the order in which they were added.
 	 * @param child the new child node of this Node
 	 * @throws DuplicateNodeException if the specified node is an existing child of this Node, 
 	 * or has the same containing Tree as this one at the time when it is added to this Node
 	 * @throws IllegalNodeException if the specified node is of an illegal type
 	 * (for example null). Subclasses may be more restrictive and disallow other types.
 	 */
-	public void addChild(TreeNode<E> child);
+	public void addChild(TreeNode<E> child) throws DuplicateNodeException, IllegalNodeException;
 	
 	/**
 	 * Unlinks this Node, from its parent, if it has one.

@@ -112,19 +112,6 @@ public abstract class ContainingNode<E> extends AbstractNode<E> {
 	}
 	
 	/**
-	 * Removes and returns the child of this Node at the given index,
-	 * if it exists. This sets the containingTree of the child Node 
-	 * and all of its descendants to null. 
-	 * If there is no child at the given index, this
-	 * method returns null.
-	 * @param index the index at which to remove the child node
-	 * @return the removed Node, or null if there was no Node 
-	 * at the specified index.
-	 * @throws IndexOutOfBoundsException if the index is out of range
-	 */
-	protected abstract TreeNode<E> removeChild(int index) throws IndexOutOfBoundsException;
-
-	/**
 	 * Removes the given node from this Node's list of children,
 	 * if it was a child of this Node, and sets the containingTree
 	 * of the child Node and all of its descendants to null.
@@ -133,40 +120,6 @@ public abstract class ContainingNode<E> extends AbstractNode<E> {
 	 * otherwise false.
 	 */
 	protected abstract boolean removeChild(TreeNode<E> child);
-	
-	/**
-	 * Adds the specified node as a child node of this Node with the 
-	 * specified index. The child node must not be null or otherwise any type
-	 * not allowed by {@code checkNodeType()}, must not be an
-	 * existing child of this Node, or have the same containing Tree 
-	 * at the time when it is added to this Node. 
-	 * The index of the new child node must be between zero and 
-	 * the current number of children of this Node.
-	 * @param index the index at which to add the child to this Node's list of children
-	 * @param child the new child node of this Node
-	 * @throws IllegalNodeException if the specified node is of an illegal type
-	 * (for example null). Subclasses may be more restrictive and disallow other types.
-	 * @throws DuplicateNodeException if the specified node is an existing child of this Node, 
-	 * or has the same containing Tree as this one at the time when it is added to this Node
-	 * @throws IndexOutOfBoundsException if the index supplied is negative 
-	 * or greater than the number of children this Node has at the time 
-	 * this method executes.
-	 * @see #checkNodeType(ContainingNode)
-	 */
-	protected abstract void addChild(int index, TreeNode<E> child) 
-			throws DuplicateNodeException, IllegalNodeException, IndexOutOfBoundsException;
-	
-	/**
-	 * Finds the index of a given child node in this Node's
-	 * list of children. If the given node is not a child of this Node,
-	 * this method returns -1. Since this Node implementation does not allow 
-	 * duplicates, the index found by this method is the unique index of that 
-	 * child in this Node's list of children.
-	 * @param child the node to find the index of.
-	 * @return the index of the specified Node in this Node's list 
-	 * of children, or -1 if the node is not a child of this Node.
-	 */
-	protected abstract int getIndex(TreeNode<E> child);
 	
 	/**
 	 * Sets the containing Tree of this node, 
@@ -212,8 +165,9 @@ public abstract class ContainingNode<E> extends AbstractNode<E> {
 	 * no checking of types is done. Should remain a protected method.
 	 * @param parent the new parent Node for this Node.
 	 */
-	protected void setParent(ContainingNode<E> parent) {
-		this.parent = parent;
+	@Override
+	protected void setParent(TreeNode<E> parent) {
+		this.parent = (ContainingNode<E>) parent;
 	}
 	
 }
